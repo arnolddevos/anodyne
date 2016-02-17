@@ -2,8 +2,12 @@ package anodyne
 
 object RuleExamples extends App with Rules with HMaps {
 
-  trait Term {
-    type Value
+  type Corpus = HMap
+
+  def addResult(h: HMap, t: Term)(v: t.Value) = h.add(t)(v)
+  def removeResult(h: HMap, t: Term) = h.remove(t)
+
+  abstract class Term extends TermSpec {
     def name: String
     def unapply(h: HMap): Option[Value] = h.get(this)
     override def toString = s"Term($name)"

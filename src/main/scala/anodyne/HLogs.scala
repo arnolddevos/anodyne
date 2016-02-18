@@ -29,12 +29,12 @@ trait Cells { this: HMaps =>
 
   type Cell <: CellSpec
 
-  trait CellSpec { cell => 
+  trait CellSpec { cell =>
     type Value
     def value: Value
     val term: Term { type Value = cell.Value }
     def cast(t: Term) =
-      if(t == term) Some(asInstanceOf[Cell { type Value = t.Value }]) 
+      if(t == term) Some(asInstanceOf[Cell { type Value = t.Value }])
       else None
     override def toString = s"$term = $value"
   }
@@ -46,19 +46,19 @@ trait Cells { this: HMaps =>
       underlying.collectFirst(Function.unlift(_.cast(t)))
     def findAll(t: Term) =
       underlying.collect(Function.unlift(_.cast(t)))
-    def keys = 
+    def keys =
       underlying.map( _.term ).distinct
-    def get(t: Term): Option[t.Value] = 
+    def get(t: Term): Option[t.Value] =
       find(t).map( _.value )
-    def apply(t: Term): t.Value = 
+    def apply(t: Term): t.Value =
       get(t).get
     def add(c: Cell) = new CellList {
       val underlying = c :: self.underlying
     }
-    def remove(t: Term): CellList = new CellList { 
+    def remove(t: Term): CellList = new CellList {
       val underlying = self.underlying filter (_.term == t)
     }
-    def removeFirst(t: Term): CellList = new CellList { 
+    def removeFirst(t: Term): CellList = new CellList {
       val underlying = {
         val (a, b) = self.underlying span (_.term != t)
         a ::: b.drop(1)

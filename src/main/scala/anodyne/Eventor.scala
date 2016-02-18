@@ -1,4 +1,4 @@
-package anodyne 
+package anodyne
 
 trait Eventor extends HMaps with HLogs with Rules {
 

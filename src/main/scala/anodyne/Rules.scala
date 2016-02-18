@@ -17,7 +17,7 @@ trait Rules { this: HMaps =>
     override def toString = s"rule($term)"
   }
 
-  def rulePf(h: Term)( b: PartialFunction[Corpus, h.Value]): Rule = 
+  def rulePf(h: Term)( b: PartialFunction[Corpus, h.Value]): Rule =
     ruleOf(h)(b.lift)
 
   def ruleOf(h: Term)( b: Corpus => Option[h.Value]): Rule = {
@@ -30,14 +30,14 @@ trait Rules { this: HMaps =>
 
   def applyRules(h: Corpus, rs: List[Rule]): Corpus = {
 
-    val rs0: Iterable[Rule] = 
+    val rs0: Iterable[Rule] =
       for {
-        (k, rsk) <- rs.groupBy(_.term) 
+        (k, rsk) <- rs.groupBy(_.term)
         if h.get(k).isEmpty
       }
-      yield 
+      yield
         rsk.reduce(
-          (r1, r2) => 
+          (r1, r2) =>
             r1 orElse r2.body.asInstanceOf[Corpus => Option[r1.Value]])
 
     @annotation.tailrec

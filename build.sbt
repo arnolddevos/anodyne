@@ -2,6 +2,5 @@ name := "anodyne"
 
 organization := "com.bgsig"
 
-versionWithGit
+enablePlugins(DottedGitVersioning)
 
-git.baseVersion := "0.1"

@@ -14,4 +14,4 @@ trait Extractor[-S,+T] {
 }
 ```
 
-This captures the scala pattern matching convention. It is the converse of `Function1[-S, +T]` and a relative of `PartialFunction[-S, +T]`.  
+This captures the scala pattern matching convention in a trait. It is the inverse of `Function1[-S, +T]` and a close relative of `PartialFunction[-S, +T]`.  

@@ -2,25 +2,20 @@ package anodyne
 
 trait Rules { this: HMaps =>
 
-  type Corpus <: Row
-
-  def addResult(h: Corpus, t: Term)(v: t.Value): Corpus
-  def removeResult(h: Corpus, t: Term): Corpus
-
   trait Rule { rule =>
     type Value
     val term: Term { type Value = rule.Value }
-    val body: Corpus => Option[Value]
-    def orElse (alt: Corpus => Option[Value]): Rule = ruleOf(term) {
+    val body: HMap => Option[Value]
+    def orElse (alt: HMap => Option[Value]): Rule = ruleOf(term) {
       m => body(m) orElse alt(m)
     }
     override def toString = s"rule($term)"
   }
 
-  def rulePf(h: Term)( b: PartialFunction[Corpus, h.Value]): Rule =
+  def rulePf(h: Term)( b: PartialFunction[HMap, h.Value]): Rule =
     ruleOf(h)(b.lift)
 
-  def ruleOf(h: Term)( b: Corpus => Option[h.Value]): Rule = {
+  def ruleOf(h: Term)( b: HMap => Option[h.Value]): Rule = {
     new Rule {
       type Value = h.Value
       val term = h: Term { type Value = h.Value }
@@ -28,7 +23,7 @@ trait Rules { this: HMaps =>
     }
   }
 
-  def applyRules(h: Corpus, rs: List[Rule]): Corpus = {
+  def applyRules(h: HMap, rs: List[Rule]): HMap = {
 
     val rs0: Iterable[Rule] =
       for {
@@ -38,19 +33,17 @@ trait Rules { this: HMaps =>
       yield
         rsk.reduce(
           (r1, r2) =>
-            r1 orElse r2.body.asInstanceOf[Corpus => Option[r1.Value]])
+            r1 orElse r2.body.asInstanceOf[HMap => Option[r1.Value]])
 
     @annotation.tailrec
-    def iterate(h0: Corpus): Corpus = {
+    def iterate(h0: HMap): HMap = {
       val h =
         rs0.foldLeft(h0) {
           (h, r) =>
             val k = r.term
             val e = r.body(h)
             if( e != h.get(k))
-              e.fold(
-                removeResult(h, k))(
-                addResult(h, k)(_))
+              e.fold(h.remove(k))(h.add(k)(_))
             else
               h
         }
@@ -60,4 +53,9 @@ trait Rules { this: HMaps =>
 
     iterate(h)
   }
+}
+
+object Rules extends Rules with HMaps {
+  abstract class Term extends TermSpec
+  def term[V] = new Term { type Value = V }
 }

@@ -2,11 +2,6 @@ package anodyne
 
 object RuleExamples extends App with Rules with HMaps {
 
-  type Corpus = HMap
-
-  def addResult(h: HMap, t: Term)(v: t.Value) = h.add(t)(v)
-  def removeResult(h: HMap, t: Term) = h.remove(t)
-
   abstract class Term extends TermSpec {
     def name: String
     def unapply(h: HMap): Option[Value] = h.get(this)
@@ -38,9 +33,9 @@ object RuleExamples extends App with Rules with HMaps {
     rulePf(Attention)  { case Title(a) & Patient(p) => s"$a $p" },
     rulePf(Attention)  { case Patient(p) => p },
     rulePf(Title)      { case _ => "Miss" },
-    rulePf(BatchCount) { case Method("nogap") => 1 }, 
-    rulePf(GST)        { case FeeExGST(f) => f * 0.1 }, 
-    rulePf(GST)        { case Amount(a) => a / 11.0 }, 
+    rulePf(BatchCount) { case Method("nogap") => 1 },
+    rulePf(GST)        { case FeeExGST(f) => f * 0.1 },
+    rulePf(GST)        { case Amount(a) => a / 11.0 },
     rulePf(Amount)     { case FeeExGST(f) & GST(g) => f+g },
     rulePf(FeeExGST)   { case Amount(a) & GST(g) => a-g },
     rulePf(OpeningBalance) { case Amount(a) => a },

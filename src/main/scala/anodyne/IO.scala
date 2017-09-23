@@ -1,4 +1,4 @@
-package metriview
+package anondyne
 
 import java.io._
 import java.nio.charset._
@@ -14,7 +14,7 @@ import scala.collection.JavaConverters._
 import java.lang.{ProcessBuilder, Process}
 import ProcessBuilder.Redirect
 
-object io {
+object IO {
 
   def jstreamAsList[T](s: JStream[T]): List[T] = {
     val b = new ListBuffer[T]

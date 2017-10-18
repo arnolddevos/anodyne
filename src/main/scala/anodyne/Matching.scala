@@ -1,6 +1,7 @@
 package anodyne
 
 import scala.util.matching.Regex
+import java.time.{Instant, Duration}
 import Catching._
 
 trait Matching {
@@ -101,6 +102,10 @@ trait Matching {
 
   val DoubleValue = extractor { v: String => skipExceptions {  v.toDouble }}
   
+  val InstantValue = extractor{ v: String => skipExceptions { Instant.parse(v) }}
+
+  val DurationValue = extractor{ v: String => skipExceptions { Duration.parse(v) }}
+
   def Split( sep: String) = seqExtractor[String, String] {
     s => Some(s.split(sep))
   }

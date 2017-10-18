@@ -1,7 +1,7 @@
 package anodyne
 
 import scala.util.matching.Regex
-import java.time.{Instant, Duration}
+import java.time._
 import Catching._
 
 trait Matching {
@@ -103,6 +103,14 @@ trait Matching {
   val DoubleValue = extractor { v: String => skipExceptions {  v.toDouble }}
   
   val InstantValue = extractor{ v: String => skipExceptions { Instant.parse(v) }}
+
+  val LocalDateTimeValue = extractor{ v: String => skipExceptions { LocalDateTime.parse(v) }}
+
+  val LocalDateValue = extractor{ v: String => skipExceptions { LocalDate.parse(v) }}
+
+  val LocalTimeValue = extractor{ v: String => skipExceptions { LocalTime.parse(v) }}
+
+  val ZoneOffsetValue = extractor{ v: String => skipExceptions { ZoneOffset.of(v) }}
 
   val DurationValue = extractor{ v: String => skipExceptions { Duration.parse(v) }}
 
